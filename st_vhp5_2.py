@@ -10,8 +10,9 @@ import os
 
 def stMain():
 
-  os.environ['OPENAI_API_KEY'] == st.secrets['OPENAI_API_KEY']
-  API_KEY = st.secrets['API_KEY']
+  os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
+  qdrant_api_key = st.secrets['API_KEY']
+  os.environ['API_KEY'] = qdrant_api_key 
 
   st.header(":blue[_Virtual Student Advisor for Franklin University_]")
   new_session = False
@@ -25,7 +26,7 @@ def stMain():
   # Initialize Qdrant Client
   qdrant_client = QdrantClient(
       url="https://4f411c47-4cba-4085-810c-dafbb4ca3bc3.us-east4-0.gcp.cloud.qdrant.io:6333",
-      api_key=API_KEY,
+      api_key=qdrant_api_key ,
   )
 
   #load vector store from Qdrant db
@@ -40,7 +41,6 @@ def stMain():
   chat_engine = vector_index.as_chat_engine(chat_mode="context",response_mode="compact",max_new_tokens=1024,
                                         system_prompt=("You are a chatbot, able to have normal interactions, as well as talk about Franklin University")
                                         )
-
   count = 0
 
   while not end_chat:
@@ -53,12 +53,12 @@ def stMain():
     more = True
 
     #wait for prompt from user
-    with st.sidebar.status("Waiting for prompt from you ..."):
-        while more:
-            if( prompt is None or len(prompt) <= 0):
-                more = True
-            else:
-                more = False
+    #with st.sidebar.status("Waiting for prompt from you ..."):
+    while more:
+        if( prompt is None or len(prompt) <= 0):
+            more = True
+        else:
+            more = False
 
     #write prompt on chat window
     if prompt is not None or len(prompt) > 0:
@@ -69,8 +69,8 @@ def stMain():
 
         #Get response for user from chat engine
         response = None
-        with st.sidebar.status("Waiting for response from AI..."):
-            response = chat_engine.chat(prompt)
+        #with st.sidebar.status("Waiting for response from AI..."):
+        response = chat_engine.chat(prompt)
 
         #write response on chat window
         if response is not None or len(response) > 0:
@@ -80,6 +80,9 @@ def stMain():
                 st_message.write(response)
                 st.write(" ")
 
+    new_session = st.sidebar.checkbox("Reset Chat History")
+    end_chat = st.sidebar.checkbox("Exit Chat")
+    
     # reset chat history
     if new_session:
        chat_engine.reset()
@@ -90,7 +93,7 @@ def stMain():
     st.rerun()
     st.header(":blue[_Virtual Student Advisor for Franklin University_]")
     new_session = False
-    end_chat = False
+    #end_chat = False
     new_session = st.sidebar.checkbox("Reset Chat History")
     end_chat = st.sidebar.checkbox("Exit Chat")
 
