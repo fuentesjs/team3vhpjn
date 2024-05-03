@@ -11,7 +11,7 @@ import os
 def stMain():
 
   os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-  qdrant_api_key = st.secrets['API_KEY']
+  qdrant_api_key = st.secrets['QDRANT_API_KEY']
   os.environ['QDRANT_API_KEY'] = qdrant_api_key 
 
   st.header(":blue[_Virtual Student Advisor for Franklin University_]")
