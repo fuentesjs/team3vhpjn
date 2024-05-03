@@ -12,7 +12,7 @@ def stMain():
 
   os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
   qdrant_api_key = st.secrets['API_KEY']
-  os.environ['API_KEY'] = qdrant_api_key 
+  os.environ['QDRANT_API_KEY'] = qdrant_api_key 
 
   st.header(":blue[_Virtual Student Advisor for Franklin University_]")
   new_session = False
