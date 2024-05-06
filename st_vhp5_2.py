@@ -36,38 +36,40 @@ def startChat():
 
   os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
   qdrant_api_key = st.secrets['QDRANT_API_KEY']
-
+  print("Completed Environment")
   embed_model = 'local:hkunlp/instructor-large'
   Settings.embed_model = embed_model
-
+  print("Completed Ember Model")
   # Initialize Qdrant Client
   qdrant_client = QdrantClient(
       url="https://4f411c47-4cba-4085-810c-dafbb4ca3bc3.us-east4-0.gcp.cloud.qdrant.io:6333",
       api_key=qdrant_api_key,
   )
+  print("Completed Qdrant Client")
 
   #load vector store from Qdrant db
   vector_store = QdrantVectorStore(client=qdrant_client, collection_name="mycollection", enable_hybrid=True)
-
+  print("Completed Vector Store")
   #Get vector index from vector store
   vector_index = VectorStoreIndex.from_vector_store(vector_store=vector_store)
-
+  print("Completed Vector Store Index")
   #memory = ChatMemoryBuffer.from_defaults(token_limit=1048)
 
   #initialize chat engine
   chat_engine = vector_index.as_chat_engine(chat_mode="context",response_mode="compact",max_new_tokens=1024,
                                         system_prompt=("You are a chatbot, able to have normal interactions, as well as talk about Franklin University")
                                         )
-
+  
+  print("Completed Initializing Chat Engine")
   #Initialize chat history if it has not
   if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-
+  print("Completed Initializing Chat History")
   # Display chat history
   for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
       st.markdown(message["string"])
-
+  print("Completed Display Chat History")
   st.session_state["count"] = "0"
   count = int(st.session_state["count"])
   print(f"Count S0: {count}")
